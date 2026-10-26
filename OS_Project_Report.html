@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OS Mini Project Report - CPU Process Scheduling Simulator</title>
+<style>
+  body {
+    font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+    line-height: 1.5;
+    color: #222;
+    margin: 40px;
+  }
+  h1, h2, h3, h4 {
+    color: #1a365d;
+    font-family: 'Arial', sans-serif;
+  }
+  h1 { font-size: 24pt; text-align: center; margin-bottom: 5px; }
+  h2 { font-size: 16pt; border-bottom: 2px solid #2b6cb0; padding-bottom: 5px; margin-top: 25px; }
+  h3 { font-size: 13pt; color: #2b6cb0; margin-top: 15px; }
+  .title-page {
+    text-align: center;
+    padding-top: 40px;
+    padding-bottom: 60px;
+  }
+  .title-page h1 {
+    font-size: 26pt;
+    color: #0f2d59;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .title-page h2 {
+    font-size: 16pt;
+    font-weight: normal;
+    color: #4a5568;
+    border-bottom: none;
+    margin-top: 10px;
+  }
+  .title-page .institution {
+    font-size: 18pt;
+    font-weight: bold;
+    color: #1a365d;
+    margin-top: 30px;
+    text-transform: uppercase;
+  }
+  .title-page .dept {
+    font-size: 13pt;
+    color: #4a5568;
+    margin-top: 5px;
+  }
+  .student-box {
+    margin: 50px auto;
+    width: 75%;
+    border: 2px solid #cbd5e0;
+    padding: 20px;
+    background-color: #f7fafc;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 12pt;
+  }
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 10.5pt;
+  }
+  table, th, td {
+    border: 1px solid #a0aec0;
+  }
+  th {
+    background-color: #2b6cb0;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+  td {
+    padding: 8px 10px;
+  }
+  tr:nth-child(even) {
+    background-color: #f7fafc;
+  }
+  pre, code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    background-color: #edf2f7;
+    border-radius: 4px;
+  }
+  pre {
+    padding: 12px;
+    border-left: 4px solid #3182ce;
+    font-size: 9.5pt;
+    overflow-x: auto;
+    line-height: 1.4;
+  }
+  .sig-table {
+    width: 100%;
+    border: none;
+    margin-top: 60px;
+  }
+  .sig-table td {
+    border: none;
+    padding: 20px 0;
+    vertical-align: top;
+  }
+</style>
+</head>
+<body>
+
+<!-- TITLE PAGE -->
+<div class="title-page">
+  <div class="institution">ALARD UNIVERSITY, PUNE</div>
+  <div class="dept">Department of Computer Science & Engineering</div>
+  <div style="margin: 40px 0; font-size: 14pt; font-weight: bold; color: #718096;">
+    ACADEMIC MINI PROJECT REPORT
+  </div>
+  
+  <h1>CPU PROCESS SCHEDULING SIMULATOR</h1>
+  <h2>Comparative Analysis of FCFS, SJF, Priority & Round Robin Policies</h2>
+  
+  <div class="student-box">
+    <strong>Submitted by:</strong><br>
+    <strong>Student Name:</strong> Rishi Pandey<br>
+    <strong>ERP Number:</strong> 25ET2041025<br>
+    <strong>Class / Year:</strong> 2nd Year B.Tech (Computer Science & Engineering)<br>
+    <strong>Course:</strong> Operating Systems (Course Code: CS-202)<br>
+    <strong>Academic Year:</strong> 2026 – 2027
+  </div>
+
+  <div style="margin-top: 40px; font-size: 11pt; color: #4a5568;">
+    Submitted in partial fulfillment of the academic requirements for the degree of<br>
+    <strong>Bachelor of Technology in Computer Science & Engineering</strong>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- CERTIFICATE -->
+<h2>CERTIFICATE OF COMPLETION</h2>
+<p style="text-align: justify; margin-top: 25px; line-height: 1.8; font-size: 12pt;">
+This is to certify that the mini project entitled <strong>"CPU Process Scheduling Simulator"</strong> is a bonafide record of work successfully carried out by <strong>Rishi Pandey (ERP No: 25ET2041025)</strong>, student of Second Year Computer Science & Engineering, at <strong>Alard University, Pune</strong>, under our supervision and guidance, in partial fulfillment of the requirements for the Operating Systems Laboratory.
+</p>
+
+<p style="text-align: justify; line-height: 1.8; font-size: 12pt;">
+The results embodied in this report have not been submitted to any other university or institute for the award of any degree or diploma.
+</p>
+
+<table class="sig-table">
+  <tr>
+    <td style="width: 50%;">
+      ___________________________<br>
+      <strong>Rishi Pandey</strong><br>
+      Student (ERP: 25ET2041025)<br>
+      Date: 25th October 2026
+    </td>
+    <td style="width: 50%; text-align: right;">
+      ___________________________<br>
+      <strong>Internal Faculty Guide</strong><br>
+      Department of CSE<br>
+      Alard University, Pune
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" style="text-align: center; padding-top: 50px;">
+      ___________________________<br>
+      <strong>Head of Department (CSE)</strong><br>
+      Seal of the Institution
+    </td>
+  </tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ACKNOWLEDGEMENT -->
+<h2>ACKNOWLEDGEMENT</h2>
+<p style="text-align: justify; line-height: 1.8;">
+I wish to convey my deep sense of gratitude to my faculty mentors and the Department of Computer Science & Engineering at <strong>Alard University, Pune</strong>, for providing me with the academic facilities, computational resources, and support required to develop this Operating Systems mini project.
+</p>
+<p style="text-align: justify; line-height: 1.8;">
+I am deeply indebted to our Operating Systems professors for their comprehensive lectures on process synchronization, scheduling policies, context switching, and Gantt chart mechanics. Their insightful discussions and academic mentorship helped me implement accurate algorithmic simulations.
+</p>
+<p style="text-align: justify; line-height: 1.8;">
+I also thank my classmates and family members for their continuous encouragement and constructive feedback throughout the course of this project.
+</p>
+<br>
+<p>
+<strong>Rishi Pandey</strong><br>
+ERP No: 25ET2041025<br>
+2nd Year CSE, Alard University, Pune
+</p>
+
+<div class="page-break"></div>
+
+<!-- ABSTRACT -->
+<h2>1. ABSTRACT</h2>
+<p style="text-align: justify; line-height: 1.7;">
+In multiprogramming operating systems, the CPU scheduler is responsible for selecting active processes from the ready queue and dispatching CPU time slices to optimize system performance metrics such as CPU utilization, throughput, waiting time, and turnaround time.
+</p>
+<p style="text-align: justify; line-height: 1.7;">
+This project implements a comprehensive <strong>CPU Process Scheduling Simulator</strong> in C++ (C++17) covering four classical CPU scheduling algorithms:
+</p>
+<ol>
+  <li><strong>First-Come, First-Served (FCFS):</strong> Non-preemptive, arrival-time ordered policy.</li>
+  <li><strong>Shortest Job First (SJF):</strong> Non-preemptive, burst-time optimal policy.</li>
+  <li><strong>Priority Scheduling:</strong> Non-preemptive, priority-driven policy (lower integer value = higher priority).</li>
+  <li><strong>Round Robin (RR):</strong> Preemptive, cyclic time-sliced policy with customizable time quantum.</li>
+</ol>
+<p style="text-align: justify; line-height: 1.7;">
+The simulator computes exact <strong>Completion Time (CT)</strong>, <strong>Turnaround Time (TAT)</strong>, and <strong>Waiting Time (WT)</strong>, constructs dynamic <strong>ASCII Gantt Charts</strong> illustrating processor execution blocks and idle intervals, and provides an automated <strong>Comparative Benchmark Engine</strong> that analyzes the algorithms side-by-side to determine the optimal policy for any input dataset.
+</p>
+
+<h2>2. MATHEMATICAL FORMULAS</h2>
+<p>For a set of $N$ processes, where process $P_i$ has Arrival Time $AT_i$, Burst Time $BT_i$, and Completion Time $CT_i$:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Formula</th>
+      <th>Physical Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Turnaround Time (TAT)</strong></td>
+      <td><code>TAT = CT - AT</code></td>
+      <td>Total time elapsed from process arrival to final completion.</td>
+    </tr>
+    <tr>
+      <td><strong>Waiting Time (WT)</strong></td>
+      <td><code>WT = TAT - BT</code></td>
+      <td>Total time spent waiting in the ready queue.</td>
+    </tr>
+    <tr>
+      <td><strong>Average Turnaround Time</strong></td>
+      <td><code>Avg_TAT = (&Sigma; TAT) / N</code></td>
+      <td>Overall system efficiency metric.</td>
+    </tr>
+    <tr>
+      <td><strong>Average Waiting Time</strong></td>
+      <td><code>Avg_WT = (&Sigma; WT) / N</code></td>
+      <td>Average delay experienced by waiting jobs.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>3. ALGORITHM COMPARISON & CHARACTERISTICS</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>Type</th>
+      <th>Selection Criteria</th>
+      <th>Key Advantages</th>
+      <th>Key Disadvantages</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>FCFS</strong></td>
+      <td>Non-preemptive</td>
+      <td>Arrival Time (FIFO)</td>
+      <td>Simple, zero overhead, fair order</td>
+      <td>Convoy Effect; high average waiting time</td>
+    </tr>
+    <tr>
+      <td><strong>SJF</strong></td>
+      <td>Non-preemptive</td>
+      <td>Shortest Burst Time</td>
+      <td>Minimizes average waiting time</td>
+      <td>Starvation of long jobs; impossible to know exact future burst</td>
+    </tr>
+    <tr>
+      <td><strong>Priority</strong></td>
+      <td>Non-preemptive</td>
+      <td>Priority Value</td>
+      <td>Accommodates critical tasks</td>
+      <td>Indefinite blocking (starvation) of low-priority jobs</td>
+    </tr>
+    <tr>
+      <td><strong>Round Robin</strong></td>
+      <td>Preemptive</td>
+      <td>Time Quantum (Q)</td>
+      <td>Excellent responsiveness; no starvation</td>
+      <td>Context switch overhead; higher average waiting time if Q is small</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>4. EXPERIMENTAL RESULTS & GANTT CHARTS</h2>
+<p>Using the standard benchmark dataset (5 processes):</p>
+<table>
+  <thead>
+    <tr>
+      <th>Process ID</th>
+      <th>Arrival Time (ms)</th>
+      <th>Burst Time (ms)</th>
+      <th>Priority (1 = Highest)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>P1</td><td>0</td><td>5</td><td>2</td></tr>
+    <tr><td>P2</td><td>1</td><td>3</td><td>1</td></tr>
+    <tr><td>P3</td><td>2</td><td>8</td><td>4</td></tr>
+    <tr><td>P4</td><td>3</td><td>6</td><td>3</td></tr>
+    <tr><td>P5</td><td>4</td><td>4</td><td>2</td></tr>
+  </tbody>
+</table>
+
+<h3>4.1 Overall Comparative Benchmark Summary</h3>
+<pre>
+====================================================================
+                     OVERALL COMPARISON SUMMARY                     
+====================================================================
+Algorithm                   Avg Turnaround (ms)   Avg Waiting (ms)
+--------------------------------------------------------------------
+FCFS                        13.40                 8.20
+SJF (Non-Preemptive)        11.80                 6.60
+Priority Scheduling         11.80                 6.60
+Round Robin (Q=2)           17.80                 12.60
+====================================================================
+[*] Recommendation: "SJF (Non-Preemptive)" yields the lowest average waiting time (6.60 ms) for this dataset!
+</pre>
+
+<h3>4.2 FCFS Gantt Chart</h3>
+<pre>
+>>> ASCII GANTT CHART <<<
++-------+-------+-------+-------+-------+
+|  P1   |  P2   |  P3   |  P4   |  P5   |
++-------+-------+-------+-------+-------+
+0       5       8       16      22      26      
+</pre>
+
+<h3>4.3 SJF Gantt Chart</h3>
+<pre>
+>>> ASCII GANTT CHART <<<
++-------+-------+-------+-------+-------+
+|  P1   |  P2   |  P5   |  P4   |  P3   |
++-------+-------+-------+-------+-------+
+0       5       8       12      18      26      
+</pre>
+
+<div class="page-break"></div>
+
+<h2>5. CRITICAL OBSERVATIONS & SYSTEM TRADE-OFFS</h2>
+<ol>
+  <li><strong>Optimality of SJF:</strong> SJF produced the minimum average waiting time of $6.60	ext{ ms}$, confirming the theoretical theorem that scheduling short jobs first minimizes ready queue queuing delays.</li>
+  <li><strong>Convoy Effect in FCFS:</strong> In FCFS, short processes P2 (burst 3) and P5 (burst 4) experienced prolonged waiting times because process P3 (burst 8) held the CPU uninterrupted, resulting in an average waiting time of $8.20	ext{ ms}$.</li>
+  <li><strong>Impact of Time Quantum in Round Robin:</strong> With $Q=2	ext{ ms}$, Round Robin preempted jobs frequently, producing 14 context switches. While responsiveness was optimal, average waiting time increased to $12.60	ext{ ms}$.</li>
+</ol>
+
+<h2>6. CONCLUSION & FUTURE ENHANCEMENTS</h2>
+<p style="text-align: justify;">
+The <strong>CPU Process Scheduling Simulator</strong> accurately replicates operating system short-term dispatching mechanics. By visualizing Gantt charts and generating side-by-side performance metrics, this project bridges theoretical OS principles with observable algorithmic execution.
+</p>
+<p><strong>Future Scope:</strong></p>
+<ul>
+  <li>Implementation of Multi-Level Feedback Queue (MLFQ) with dynamic priority aging.</li>
+  <li>Preemptive SJF (Shortest Remaining Time First - SRTF).</li>
+  <li>Modeling non-zero context switching overhead delays.</li>
+</ul>
+
+<h2>7. REFERENCES</h2>
+<ol>
+  <li>Silberschatz, A., Galvin, P. B., & Gagne, G. (2018). <em>Operating System Concepts</em> (10th ed.). Wiley.</li>
+  <li>Tanenbaum, A. S., & Bos, H. (2015). <em>Modern Operating Systems</em> (4th ed.). Pearson.</li>
+  <li>Stallings, W. (2018). <em>Operating Systems: Internals and Design Principles</em> (9th ed.). Pearson.</li>
+</ol>
+
+</body>
+</html>
